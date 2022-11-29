@@ -84,9 +84,10 @@ namespace MISA.AMIS.BL
             {
                 if (codeInData.EmployeeCode == record.EmployeeCode)
                 {
-                    return new ResponseData(false, new
+                    return new ResponseData(false,new
                     {
-                        errorMessage = "Mã nhân viên đã có trong hệ thống"
+                        name = "EmployeeCode",
+                        value = "Mã nhân viên đã có trong hệ thống"
                     });
                 }
             }
@@ -97,7 +98,8 @@ namespace MISA.AMIS.BL
                     {
                         return new ResponseData(false, new
                         {
-                            errorMessage = "Mã nhân viên đã có trong hệ thống"
+                            name = "EmployeeCode",
+                            value = "Mã nhân viên đã có trong hệ thống"
                         });
                     }
                 }

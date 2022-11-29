@@ -23,7 +23,7 @@ namespace MISA.AMIS.Common.Entities
         /// Họ và tên nhân viên
         /// </summary>
 
-        [isNotNullOrEmpty("Nhân viên không được để trống")]
+        [isNotNullOrEmpty("Tên nhân viên không được để trống")]
         [Caption("Họ và tên")]
         public string? EmployeeName { get; set; }
         /// <summary>
@@ -42,7 +42,7 @@ namespace MISA.AMIS.Common.Entities
         /// Số căn cước công dân
         /// </summary>
 
-        [isNumber("^[0-9]+$","Phải là số")]
+        [isNumber("^[0-9]+$","Số chứng minh nhân dân phải là số")]
         public string? IdentityNumber { get; set; }
         /// <summary>
         /// Ngày cấp căn cước

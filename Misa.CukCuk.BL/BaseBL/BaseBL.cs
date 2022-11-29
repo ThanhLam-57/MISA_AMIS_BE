@@ -144,10 +144,15 @@ namespace MISA.AMIS.BL.BaseBL
                     bool checkEmail = IsValidEmail(propValue?.ToString());
                     if (propValue != null && !checkEmail)
                     {
-                        return new ResponseData(false, new
+                        listErr.Add(new
                         {
-                            ErrorMessage = errorMessage,
+                            name = propName,
+                            value = errorMessage,
                         });
+                        //return new ResponseData(false, new
+                        //{
+                        //    ErrorMessage = errorMessage,
+                        //});
                     }
                 }
 
@@ -164,10 +169,15 @@ namespace MISA.AMIS.BL.BaseBL
                     // thêm điều kiện nếu propValue = "" 
                     if (propValue != null && !regex.IsMatch(propValue.ToString()))
                     {
-                        return new ResponseData(false, new
+                        listErr.Add(new
                         {
-                            errorMessage = errorMessage,
+                            name = propName,
+                            value = errorMessage,
                         });
+                        //return new ResponseData(false, new
+                        //{
+                        //    errorMessage = errorMessage,
+                        //});
                     }
                 }
                 if(checkDateTime == true)
@@ -176,15 +186,28 @@ namespace MISA.AMIS.BL.BaseBL
                     var errorMessage = (attribute as CheckDateTimeAttribute).ErrorMessage;
                     if (propValue != null && !IsValidDate(propValue.ToString()) && propValue.ToString() != "")
                     {
-                        return new ResponseData(false, new
+                        listErr.Add(new
                         {
-                            errorMessage = errorMessage,
+                            name = propName,
+                            value = errorMessage,
                         });
+                        //return new ResponseData(false, new
+                        //{
+                        //    errorMessage = errorMessage,
+                        //});
                     }
                 }
             }
             //chạy validate riêng
             var res = ValidateCustom(recordID, record);
+            if (!res.Success)
+            {
+                listErr.Add(res.Data);
+            }
+            if (listErr.Count > 0)
+            {
+                return new ResponseData(false,listErr);
+            }
             return res;
         }
         /// <summary>
