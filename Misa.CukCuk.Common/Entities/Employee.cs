@@ -17,7 +17,7 @@ namespace MISA.AMIS.Common.Entities
 
         [isNotNullOrEmpty("Mã nhân viên không được để trống")]
         [Caption("Mã nhân viên")]
-
+        [MaxlengthRecordCode("Mã nhân viên không được quá 20 kí tự")]
         public string EmployeeCode { get; set; }
         /// <summary>
         /// Họ và tên nhân viên
@@ -90,21 +90,9 @@ namespace MISA.AMIS.Common.Entities
         [Caption("Đơn vị")]
         public string? DepartmentName { get; set; }
         /// <summary>
-        /// Mã số thuế
-        /// </summary>
-        public string? TaxCode { get; set; }
-        /// <summary>
-        /// tiền lương
-        /// </summary>
-        public double? Salary { get; set; }
-        /// <summary>
         /// Ngày gia nhập công ty
         /// </summary>
         public DateTime? JoiningDate { get; set; }
-        /// <summary>
-        /// Tình trạng công việc
-        /// </summary>
-        public int WorkStatus { get; set; }
         /// <summary>
         /// Ngày thêm
         /// </summary>

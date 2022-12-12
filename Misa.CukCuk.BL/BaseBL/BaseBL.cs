@@ -83,7 +83,7 @@ namespace MISA.AMIS.BL.BaseBL
         /// CreatedBy:NTLAM(22/11/2022)
         public ResponseData UpdateOrInsert(Guid recordID, T record)
         {
-            var result = ValidateData(null, record);
+            var result = ValidateData(recordID, record);
             if (result.Success == false)
             {
                 return new ResponseData(false, result.Data);
@@ -118,6 +118,8 @@ namespace MISA.AMIS.BL.BaseBL
 
                 //Kiểm tra property có attribute là CheckDateTime không
                 var checkDateTime = Attribute.IsDefined(prop, typeof(CheckDateTimeAttribute));
+                //Kiểm tra property có attribute là MaxlengthRecordCode không
+                var checkMaxLengthRecordCode = Attribute.IsDefined(prop, typeof(MaxlengthRecordCodeAttribute));
 
                 if (IsNotNullOrEmpty == true)
                 {
@@ -130,10 +132,6 @@ namespace MISA.AMIS.BL.BaseBL
                             name = propName,
                             value = errorMessage,
                         });
-                        //return new ResponseData(false, new
-                        //{
-                        //    ErrorMessage = errorMessage,
-                        //});
                     }
                 }
 
@@ -149,10 +147,6 @@ namespace MISA.AMIS.BL.BaseBL
                             name = propName,
                             value = errorMessage,
                         });
-                        //return new ResponseData(false, new
-                        //{
-                        //    ErrorMessage = errorMessage,
-                        //});
                     }
                 }
 
@@ -195,6 +189,20 @@ namespace MISA.AMIS.BL.BaseBL
                         //{
                         //    errorMessage = errorMessage,
                         //});
+                    }
+                }
+                if(checkMaxLengthRecordCode == true)
+                {
+                    var attribute = prop.GetCustomAttributes(typeof(MaxlengthRecordCodeAttribute), true).FirstOrDefault();
+                    var errorMessage = (attribute as MaxlengthRecordCodeAttribute).ErrorMessage;
+                    bool checkMaxLength = CheckMaxLengthRecordCode(propValue?.ToString());
+                    if (propValue != null && !checkMaxLength)
+                    {
+                        listErr.Add(new
+                        {
+                            name = propName,
+                            value = errorMessage,
+                        });
                     }
                 }
             }
@@ -252,6 +260,14 @@ namespace MISA.AMIS.BL.BaseBL
                 }
 
             }
+        }
+        public bool CheckMaxLengthRecordCode(string recordCode)
+        {
+            if(recordCode.Length >= 20)
+            {
+                return false;
+            }
+            return true;
         }
         /// <summary>
         /// Validate ngày không vượt quá ngày hiện tại

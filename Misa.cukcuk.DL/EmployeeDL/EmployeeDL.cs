@@ -66,9 +66,9 @@ namespace MISA.AMIS.DL
             string storedProcdureName = "Proc_employee_GetPaging";
 
             var parameter = new DynamicParameters();
-            parameter.Add("@v_Offset", (pageIndex - 1) * pageSize);
-            parameter.Add("@v_limit", pageSize);
-            parameter.Add("@v_Soft", "ModifiedDate DESC");
+            parameter.Add("@Offset", (pageIndex - 1) * pageSize);
+            parameter.Add("@limit", pageSize);
+            parameter.Add("@Soft", "ModifiedDate DESC");
 
             var lstConditionKey = new List<string>();
             var orConditions = new List<string>();
@@ -80,6 +80,7 @@ namespace MISA.AMIS.DL
                 lstConditionKey.Add($" EmployeeCode LIKE '%{keyword}%' ");
                 lstConditionKey.Add($" EmployeeName LIKE '%{keyword}%' ");
                 lstConditionKey.Add($" PhoneNumber LIKE '%{keyword}%' ");
+                lstConditionKey.Add($" Address LIKE '%{keyword}%' ");
             }
             if (lstConditionKey.Count > 0)
             {
@@ -97,7 +98,7 @@ namespace MISA.AMIS.DL
             {
                 whereClause += $" {string.Join(" AND ", andConditions)}";
             }
-            parameter.Add("@v_Where", whereClause);
+            parameter.Add("@Where", whereClause);
 
             //Thuc hien goij vaof DB de chay Proc voi tham so dau vao tren
             var multipleResults = mySqlConnection.QueryMultiple(storedProcdureName, parameter, commandType: System.Data.CommandType.StoredProcedure);
@@ -145,7 +146,7 @@ namespace MISA.AMIS.DL
 
             var parameter = new DynamicParameters();
 
-            parameter.Add("v_EmployeeCode", EmployeeCode);
+            parameter.Add("@EmployeeCode", EmployeeCode);
 
             //Lấy thông tin ID và Code 
             var checkEmpCode = mySqlConnection.QueryFirstOrDefault<Employee>(storedProcedureName, parameter, commandType: System.Data.CommandType.StoredProcedure);

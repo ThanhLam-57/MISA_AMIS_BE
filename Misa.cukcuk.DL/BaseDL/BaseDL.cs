@@ -20,7 +20,7 @@ namespace MISA.AMIS.DL.BaseDL
             string storedProcedureName = String.Format(Procedues.DELETE_BY_ID, typeof(T).Name);
 
             var parameters = new DynamicParameters();
-            parameters.Add($"v_{typeof(T).Name}Id", recordID);
+            parameters.Add($"@{typeof(T).Name}Id", recordID);
             using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
             {
                 int numberOfAffectedRows = mySqlConnection.Execute(storedProcedureName, parameters, commandType: System.Data.CommandType.StoredProcedure);
@@ -62,7 +62,7 @@ namespace MISA.AMIS.DL.BaseDL
             string storedProcedureName = String.Format(Procedues.GET_BY_ID, typeof(T).Name);
 
             var parameters = new DynamicParameters();
-            parameters.Add($"v_{typeof(T).Name}ID", recordID);
+            parameters.Add($"@{typeof(T).Name}ID", recordID);
             using (var mySqlConnection = new MySqlConnection(DatabaseContext.ConnectionString))
             {
                 var record = mySqlConnection.QueryFirstOrDefault<T>(storedProcedureName, parameters, commandType: System.Data.CommandType.StoredProcedure);
@@ -111,7 +111,7 @@ namespace MISA.AMIS.DL.BaseDL
                 {
                     propValue = prop.GetValue(record);
                 }
-                parameters.Add($"v_{prop.Name}", propValue);
+                parameters.Add($"@{prop.Name}", propValue);
             }
             using (var mySqlConnection = new MySqlConnection(connectionString))
             {
@@ -181,7 +181,7 @@ namespace MISA.AMIS.DL.BaseDL
                 {
                     propValue = prop.GetValue(record);
                 }
-                parameters.Add($"v_{prop.Name}", propValue);
+                parameters.Add($"@{prop.Name}", propValue);
             }
 
             using (var mySqlConnection = new MySqlConnection(connectionString))
@@ -248,7 +248,7 @@ namespace MISA.AMIS.DL.BaseDL
                 {
                     propValue = prop.GetValue(record);
                 }
-                parameters.Add($"v_{prop.Name}", propValue);
+                parameters.Add($"@{prop.Name}", propValue);
             }
 
             using (var mySqlConnection = new MySqlConnection(connectionString))

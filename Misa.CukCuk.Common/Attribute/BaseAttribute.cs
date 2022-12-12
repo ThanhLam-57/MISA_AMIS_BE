@@ -95,4 +95,13 @@ namespace MISA.AMIS.Common
             HeaderCell = headerCell;
         }
     }
+
+    public class MaxlengthRecordCodeAttribute : Attribute
+    {
+        public string ErrorMessage { get; set; }
+        public MaxlengthRecordCodeAttribute(string errorMessage)
+        {
+            ErrorMessage = errorMessage;
+        }
+    }
 }

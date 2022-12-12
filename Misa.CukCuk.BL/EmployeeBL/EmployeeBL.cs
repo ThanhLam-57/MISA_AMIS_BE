@@ -79,6 +79,12 @@ namespace MISA.AMIS.BL
         public override ResponseData ValidateCustom(Guid? recordID, Employee record)
         {
             var codeInData = DuplicateCode(record.EmployeeCode);
+
+            //Nếu không có mã nhân viên dưới database là không trùng
+            if(codeInData == null)
+            {
+                 return new ResponseData(true, null);
+            }
             //Kiểm tra nếu là sửa thì không bắt trùng mã nếu trùng ID
             if (recordID == Guid.Empty)
             {

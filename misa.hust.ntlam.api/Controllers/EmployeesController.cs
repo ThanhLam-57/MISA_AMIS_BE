@@ -34,7 +34,7 @@ namespace MISA.AMIS.Controller
         /// <param name="offset">vi tri ban ghi bat dau lay du lieu</param>
         /// <returns>Danh sach nhan vien</returns>   
         /// CreatedBy:NTLAM(12/11/2022)       
-        [HttpGet]
+        [HttpPost]
         [Route("filter")]//done
         public IActionResult FilterEmployees(
             [FromQuery] string? employeeFilter,
