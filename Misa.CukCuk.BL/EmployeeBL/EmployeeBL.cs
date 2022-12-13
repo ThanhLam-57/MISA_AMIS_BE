@@ -16,7 +16,7 @@ namespace MISA.AMIS.BL
         private IEmployeeDL _employeeDL;
         #endregion
         #region Constructor
-        public EmployeeBL( IEmployeeDL employeeDL) : base(employeeDL)
+        public EmployeeBL(IEmployeeDL employeeDL) : base(employeeDL)
         {
             _employeeDL = employeeDL;
 
@@ -81,16 +81,16 @@ namespace MISA.AMIS.BL
             var codeInData = DuplicateCode(record.EmployeeCode);
 
             //Nếu không có mã nhân viên dưới database là không trùng
-            if(codeInData == null)
+            if (codeInData == null)
             {
-                 return new ResponseData(true, null);
+                return new ResponseData(true, null);
             }
             //Kiểm tra nếu là sửa thì không bắt trùng mã nếu trùng ID
             if (recordID == Guid.Empty)
             {
                 if (codeInData.EmployeeCode == record.EmployeeCode)
                 {
-                    return new ResponseData(false,new
+                    return new ResponseData(false, new
                     {
                         name = "EmployeeCode",
                         value = "Mã nhân viên đã có trong hệ thống"
@@ -100,15 +100,15 @@ namespace MISA.AMIS.BL
             else
             {
                 //Điều kiện trùng mã code mà khác ID
-                    if(codeInData != null && codeInData.EmployeeCode == record.EmployeeCode && codeInData.EmployeeID != record.EmployeeID)
+                if (codeInData != null && codeInData.EmployeeCode == record.EmployeeCode && codeInData.EmployeeID != record.EmployeeID)
+                {
+                    return new ResponseData(false, new
                     {
-                        return new ResponseData(false, new
-                        {
-                            name = "EmployeeCode",
-                            value = "Mã nhân viên đã có trong hệ thống"
-                        });
-                    }
+                        name = "EmployeeCode",
+                        value = "Mã nhân viên đã có trong hệ thống"
+                    });
                 }
+            }
             return new ResponseData(true, null);
         }
         /// <summary>
@@ -130,7 +130,7 @@ namespace MISA.AMIS.BL
                 var workSheet = package.Workbook.Worksheets.Add("Danh sách nhân viên");
                 var datatable = new DataTable("Employees");
                 //Tạo tiêu đề
-                workSheet.Cells["A1"].Value = "Danh sách nhân viên";        
+                workSheet.Cells["A1"].Value = "Danh sách nhân viên";
                 //workSheet.Cells["A1"].value("DANH SÁCH NHÂN VIÊN");
                 //Tạo header cột
                 datatable.Columns.Add(
@@ -140,10 +140,10 @@ namespace MISA.AMIS.BL
                 foreach (var prop in properties)
                 {
                     //Nếu có caption là cột cần xuất khẩu
-                    if(Attribute.IsDefined(prop, typeof(CaptionAttribute)))
+                    if (Attribute.IsDefined(prop, typeof(CaptionAttribute)))
                     {
                         //Push vào danh sách header
-                        var caption = prop.GetCustomAttributes(typeof(CaptionAttribute),true).FirstOrDefault();
+                        var caption = prop.GetCustomAttributes(typeof(CaptionAttribute), true).FirstOrDefault();
                         datatable.Columns.Add(
                             new DataColumn((caption as CaptionAttribute).HeaderCell, typeof(string))
                         );
@@ -151,7 +151,7 @@ namespace MISA.AMIS.BL
                 }
                 //Mapping dữ liệu data
                 int stt = 1;
-                foreach(var employee in employees)
+                foreach (var employee in employees)
                 {
                     var row = datatable.NewRow();
                     row[0] = stt;
@@ -159,39 +159,47 @@ namespace MISA.AMIS.BL
                     int i = 1;
                     foreach (var prop in properties)
                     {
-                        workSheet.Cells[3,i].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        workSheet.Cells[3, i].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                         workSheet.Cells[stt + 2, i].Style.Border.BorderAround(ExcelBorderStyle.Thin);
                         workSheet.Cells[stt + 2, i].Style.WrapText = true;
                         //Nếu có caption là cột cần xuất khẩu
                         if (Attribute.IsDefined(prop, typeof(CaptionAttribute)))
-                        {                           
+                        {
                             //Push vào danh sách data
                             var value = prop.GetValue(employee);
-                            //Kiểm tra có phải cột date không
-                            if (Attribute.IsDefined(prop, typeof(CheckDateTimeAttribute)))
+                            if (value != null)
                             {
-                                DateTime date;
-                                DateTime.TryParse(value.ToString(),out date);
-                                row[i] = date.ToString("dd/MM/yyyy");
-                                workSheet.Cells[stt + 2, i+1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            }
-                            //Kiểm tra xem có phải cột giới tính không
-                            else if(prop.Name == "Gender")
-                            {
-                                if (value.ToString() == EnumGender.Male.ToString())
+                                //Kiểm tra có phải cột date không
+                                if (Attribute.IsDefined(prop, typeof(CheckDateTimeAttribute)))
                                 {
-                                    row[i] = "Nam";
+                                    DateTime date;
+                                    DateTime.TryParse(value.ToString(), out date);
+                                    row[i] = date.ToString("dd/MM/yyyy");
+                                    workSheet.Cells[stt + 2, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
                                 }
-                                else if (value.ToString() == EnumGender.FeMale.ToString())
+                                //Kiểm tra xem có phải cột giới tính không
+                                else if (prop.Name == "Gender")
                                 {
-                                    row[i] = "Nữ";
+                                    if (value.ToString() == EnumGender.Male.ToString())
+                                    {
+                                        row[i] = "Nam";
+                                    }
+                                    else if (value.ToString() == EnumGender.FeMale.ToString())
+                                    {
+                                        row[i] = "Nữ";
+                                    }
+                                    else row[i] = "Khác";
                                 }
-                                else row[i] = "Khác";
+                                else
+                                {
+                                    row[i] = value;
+                                }
                             }
                             else
                             {
                                 row[i] = value;
-                            }
+                            }    
                             i++;
                         }
                     }
@@ -211,11 +219,11 @@ namespace MISA.AMIS.BL
 
                 //
                 workSheet.Cells["A3:I3"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                workSheet.Cells["A3:I3"].Style.Fill.BackgroundColor.SetColor(60,178, 178, 178);
+                workSheet.Cells["A3:I3"].Style.Fill.BackgroundColor.SetColor(60, 178, 178, 178);
                 workSheet.Cells["A3:I3"].Style.Font.SetFromFont("Arial", 10, true);
                 workSheet.Cells["A3:I3"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 workSheet.Cells["A3:I3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                
+
                 //Chỉnh độ rộng các cột
                 workSheet.Column(1).Width = 5;
                 workSheet.Column(2).Width = 15;
@@ -227,7 +235,7 @@ namespace MISA.AMIS.BL
                 workSheet.Column(8).Width = 16;
                 workSheet.Column(9).Width = 26;
                 ;
-                
+
 
                 //Insert dữ liệu vào Sheet
                 workSheet.Cells["A3"].LoadFromDataTable(datatable, true);
