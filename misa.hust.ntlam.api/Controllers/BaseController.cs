@@ -203,6 +203,12 @@ namespace MISA.AMIS.Controller.Controllers
             }
         }
 
+        /// <summary>
+        /// Thêm mới hoặc sửa bản ghi
+        /// </summary>
+        /// <param name="recordID"></param>
+        /// <param name="record"></param>
+        /// <returns></returns>
         [HttpPost("UpdateOrInsert")]
         public IActionResult UpdateOrInsert(
             [FromQuery] Guid recordID,

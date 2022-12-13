@@ -14,7 +14,7 @@ namespace MISA.AMIS.Controller
         private IPositionBL _positionBL;
         #endregion
         #region Constructer
-        public PositionsController(PositionBL positionBL) : base(positionBL)
+        public PositionsController(IPositionBL positionBL) : base(positionBL)
         {
             _positionBL = positionBL;
         }
